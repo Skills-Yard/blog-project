@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <title>Mudit's Blog</title>
+  </head>
+  <body>
+
+    <!-- If logged in -->
+    <a href="/create-blog">Write new blog</a> 
+    <a href="/logout">Logout</a>
+
+    <!-- If logged out -->
+    <a>Login</a>
+
+    <% for (const blog of blogs) { %>
+      <div>
+        <h1><%= blog.title %></h1>
+        <p>Created At: <%= blog.createdAt %></p>
+        <a href="<%= blog.slug %>">Read more...</a>
+      </div>
+    <% } %>
+  </body>
+</html>
