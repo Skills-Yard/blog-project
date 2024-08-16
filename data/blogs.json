@@ -28,5 +28,11 @@
     "content": "akjsdhjasd",
     "slug": "/blog/locked-4",
     "createdAt": "Sat, 27 Jul 2024 09:28:24 GMT"
+  },
+  {
+    "title": "Dipish Bisht Blog",
+    "content": "This blog is written by Dipish Bisht",
+    "slug": "/blog/dipish-bisht-blog",
+    "createdAt": "Fri, 16 Aug 2024 07:36:22 GMT"
   }
 ]

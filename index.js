@@ -1,71 +1,42 @@
+require('dotenv').config();
 const express = require("express");
-const fs = require('fs');
 const cookieParser = require('cookie-parser');
+const fs = require("fs");
+const { isUserLoggedIn } = require("./middleware/middleware");
+const { createBlogs } = require("./routes/createBlog");
+const { static } = require("./routes/static");
 
-const PASSWORD = "password";
-
+const PORT = process.env.PORT || 8055;
 const app = express();
 
+// middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
 // set the view engine to ejs
+app.set('views', './views');
 app.set('view engine', 'ejs');
 
-app.get("/", (req, res) => {
-  console.log("Cookies:", req.cookies);
 
-  const jsonBlog = fs.readFileSync("./data/blogs.json");
-  const blogs = JSON.parse(jsonBlog);
+// static routes
+app.use("/", static)
 
-  res.appendHeader("Set-Cookie", "user=user-1");
-  res.render("index", {blogs});
-});
 
-app.get("/create-blog", (req, res) => {
-  res.render("create-blog");
-});
+// create-blog route
+app.use("/create-blog", isUserLoggedIn, createBlogs)
 
-app.post("/create-blog", (req, res) => {
-  const { title, content, password } = req.body;
-  const jsonBlog = fs.readFileSync("./data/blogs.json");
-  const blogs = JSON.parse(jsonBlog);
-  let slug = "/blog/" + title.trim().replaceAll(/\s+/g, "-").toLowerCase();
 
-  if(password != PASSWORD) {
-    res.send("You are not authorized!");
-  }
-
-  let isUnique = true;
-  for(let blog of blogs) {
-    if(blog.slug == slug) {
-      isUnique = false;
-    }
-  }
-
-  if(!isUnique) {
-    slug = slug + '-' + blogs.length;
-  }
-
-  const time = new Date();
-  blogs.push({
-    title, content, slug,
-    createdAt: time.toUTCString()
-  });
-  fs.writeFileSync("./data/blogs.json", JSON.stringify(blogs, null, 2));
-
-  res.redirect(`/blog/${slug}`);
-});
-
+//blog/slug route
 app.get("/blog/:slug", (req, res) => {
-  const {slug} =  req.params;
+  const { slug } = req.params;
   const jsonBlog = fs.readFileSync("./data/blogs.json");
   const blogs = JSON.parse(jsonBlog);
-  const blog = blogs.find(b => b.slug== '/blog/' + slug);
+  const blog = blogs.find(b => b.slug == '/blog/' + slug);
   res.render('blog', { blog });
 });
 
 
-app.listen(3000, () => {
-  console.log("Server running at 3000!");
+app.listen(PORT, () => {
+  console.log("Server running at", PORT);
 });
