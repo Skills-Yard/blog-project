@@ -5,11 +5,13 @@
   <body>
 
     <!-- If logged in -->
-    <a href="/create-blog">Write new blog</a> 
-    <a href="/logout">Logout</a>
-
-    <!-- If logged out -->
-    <a>Login</a>
+    <% if(authenticated) { %>
+      <a href="/create-blog">Write new blog</a> 
+      <a href="/logout">Logout</a>
+    <% } else { %>
+      <!-- If logged out -->
+      <a href="/login">Login</a>
+    <% } %>
 
     <% for (const blog of blogs) { %>
       <div>
